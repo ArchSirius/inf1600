@@ -1,0 +1,303 @@
+\documentclass[10pt,letterpaper]{article}
+
+%Langue et caractères spéciaux
+\usepackage[french]{babel} 
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+%Marges
+\usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm, columnsep=20pt]{geometry}
+%Math
+\usepackage{amsmath}
+\usepackage{textcomp}
+%Graphiques
+\usepackage{graphicx}
+\usepackage{color}
+\definecolor{orange}{RGB}{255, 165, 0}
+%Titres de section/sous-section
+\usepackage[compact]{titlesec}
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalsize}{\thesubsubsection}{1em}{}
+\renewcommand{\thesection}{Exercice \arabic{section} :}
+\renewcommand{\thesubsection}{\arabic{subsection}.}
+\renewcommand{\thesubsubsection}{\alph{subsubsection}.}
+
+%Titre
+\title{\vspace{-10mm}\Large
+INF1600 - TP 1
+\vspace{-4mm}}
+
+%Auteur
+\author{\large
+Samuel Rondeau\\
+Pacôme Bondet}
+\date{\today}
+
+
+\begin{document}
+
+\maketitle
+
+\section{révision de logique et arithmétique numérique}
+Avant de vous lancer dans les exercices concernant l'architecture, on vous présente un premier numéro vous permettant de vous (re)mettre à l'aise avec quelques notions élémentaires de logique et d'arithmétique numérique. Vous êtes ensuite appelé à bien comprendre la notation RTN, notation qui est cruciale à la réussite de l'exercice 5, soit la simulation d'un processeur.
+\bigskip
+
+\subsection{Pour les nombres entiers signés suivants, représentés en complément à deux sur le nombre de bits affichés, donnez la valeur décimale.}
+\subsubsection{$(0110110)_2 = 2^5 + 2^4 + 2^2 + 2^1 = 32 + 16 + 4 + 2 = 54$}
+
+\subsubsection{$(1011\;1010)_2 = -(0100\;0110)_2 = -(2^6 + 2^2 + 2^1) = -(64 + 4 + 2) = -70$}
+
+\subsubsection{$(2021)_8 = (010\;000\;010\;001)_2 = 2^{10} + 2^4 + 2^0 = 1024 + 16 + 1 = 1041$}
+
+\subsubsection{(FACE)$_{16} = (1111\;1010\;1100\;1110)_2 = -(0000\;0101\;0011\;0010)_2 = -(2^{10} + 2^8 + 2^5 + 2^4 + 2^2) = -1330$}
+
+\subsubsection{$(1111\;1111)_2 = -(0000\;0001)_2 = -2^0 = -1$}
+\bigskip
+
+\subsection{Parmi les 4 représentations octales ci-dessous, certaines ne sont pas possibles. Lesquelles?}
+CA73 et 958
+\bigskip
+
+\subsection{Expliquez en vos mots ce que fait la ligne suivante en langage C et à quoi peut-elle servir.}
+\qquad $y = x\;\&\;(7 << 3)$ \\
+\qquad Cette instruction décale 7 de trois bits par la gauche, et sélectionne dans $y$ les bits de $x$ à la position où se trouvent les 1 dans la résultante de l'opération de décalage, les autres bits sont 0. Il s'agit ici d'un \textit{masque} permettant de sélectionner certains bits d'intérêts de $x$. Dans le cas où $7 << 3 = (111000)_2$, $y = x_{5}x_{4}x_{3}000$ où $x_5$, $x_4$ et $x_3$ sont à la valeur des bits de position 5, 4 et 3 respectivement (où 0 = LSB) de $x$.
+\bigskip
+
+\subsection{Pour les nombres entiers suivants écrits en base décimale, donnez la représentation au format binaire signé (complément à deux) 16-bit.}
+\subsubsection{$546 = 2^9 + 2^5 + 2^1 = (0000\;0010\;0010\;0010)_2$}
+
+\subsubsection{$-1 = -2^0 = -(0000\;0000\;0000\;0001)_2 = (1111\;1111\;1111\;1111)_2$}
+
+\subsubsection{$2014 = 2^{10} + 2^9 + 2^8 + 2^7 + 2^6 + 2^4 + 2^3 + 2^2 + 2^1 = (0000\;0111\;1101\;1110)_2$}
+\bigskip
+
+\subsection{Effectuez les opérations arithmétiques suivantes sur 8 bits et indiquez s'il y a un débordement signé, en plus de fournir le résultat au format hexadécimal.}
+\subsubsection{29 + 89}
+En absence d'indications, assumons que les valeurs sont exprimées en système décimal. \\
+\begin{tabular}{c@{\:}c@{}c@{}c@{}c@{\;}c@{}c@{}c@{}c}
+  & 0 & 0 & 0 & 1 & 1 & 1 & 0 & 1\\
++ & 0 & 1 & 0 & 1 & 1 & 0 & 0 & 1\\
+\hline
+  & 0 & 1 & 1 & 1 & 0 & 1 & 1 & 0
+\end{tabular}\\
+Résultat = (76)$_{16}$. Il n'y a pas débordement.
+\medskip
+
+Puis maintenant, supposons qu'elles sont en hexadécimal. \\
+\begin{tabular}{c@{\:}c@{}c@{}c@{}c@{\;}c@{}c@{}c@{}c}
+  & 0 & 0 & 1 & 0 & 1 & 0 & 0 & 1\\
++ & 1 & 0 & 0 & 0 & 1 & 0 & 0 & 1\\
+\hline
+  & 1 & 0 & 1 & 1 & 0 & 0 & 1 & 0
+\end{tabular}\\
+Résultat = (B2)$_{16}$. Il n'y a pas débordement.
+\medskip
+
+\subsubsection{AB + 63}
+En absence d'indications, assumons que les valeurs sont exprimées en système hexadécimal. \\
+\begin{tabular}{c@{\:}c@{}c@{}c@{}c@{\;}c@{}c@{}c@{}c}
+  & 1 & 0 & 1 & 0 & 1 & 0 & 1 & 1\\
++ & 0 & 1 & 1 & 0 & 0 & 0 & 1 & 1\\
+\hline
+  & 0 & 0 & 0 & 0 & 1 & 1 & 1 & 0\\
+\end{tabular}\\
+Résultat = (0E)$_{16}$. Il y a débordement. Un $1$ en retenue ne peut être contenu dans 8 bits. Ainsi, la réponse devrait être (10E)$_{16}$.
+
+\newpage
+\section{disque dur}
+Soit un disque rigide comportant 3 plateaux (6 têtes) et étant divisé en 3 zones ayant chacune 25 000 cylindres. Les zones ont 1024, 512 et 256 secteurs par piste. Chaque secteur contient 512 octets. Le disque tourne à 7200 tours/minute. Les données sont placées dans l'ordre le plus commun (qui est dit vertical), soit selon l’algorithme:
+
+\begin{verbatim}
+Pour chaque cylindre du disque :
+    Pour chaque piste du cylindre :
+        Passer tous les secteurs d'une piste
+\end{verbatim}
+
+\noindent Répondez aux questions suivantes.
+\subsection{Quelle est la capacité totale de ce disque (choisissez l'unité que vous voulez) ?}
+
+\begin{align*}
+\text{Capacité} &= 3 \; plateaux \times \frac{2 \; surfaces}{plateau} \times \frac{25000 \; pistes}{surface} \times \frac{1024 \; secteurs}{piste} \times \frac{512 \; octets}{secteur} \\
+&+ 3 \; plateaux \times \frac{2 \; surfaces}{plateau} \times \frac{25000 \; pistes}{surface} \times \frac{512 \; secteurs}{piste} \times \frac{512 \; octets}{secteur} \\
+&+ 3 \; plateaux \times \frac{2 \; surfaces}{plateau} \times \frac{25000 \; pistes}{surface} \times \frac{256 \; secteurs}{piste} \times \frac{512 \; octets}{secteur} \\
+&= 3 \times 2 \times 25000 \times (1024 + 512 + 256) \times 512 \; \text{octets} \\
+&= 137 \, 625 \, 600 \, 000 \; \text{B} = 134 \, 400 \, 000 \; \text{kB} = 131 \, 250 \; \text{MB} \approx 128 \; \text{GB}
+\end{align*}
+\bigskip
+
+\subsection{Quel est son taux de transfert maximal soutenu en octets/seconde ?}
+Puisqu'on s'intéresse au taux maximal et non moyen pondéré, on s'intéresse au moment où une tête de lecture se trouve dans une zone de 1024 secteurs par piste. Il s'agit ici du taux pour une zone pour une surface.
+
+\begin{align*}
+\text{Taux} &= \frac{7200 \; tours}{minute} \times \frac{1 \; minute}{60 \; secondes} \times \frac{1024 \; secteurs}{tour} \times \frac{512 \; octets}{secteur} \\
+&= 7200 \div 60 \times 1024 \times 512 \; \text{B/s} \\
+&= 62 \, 914 \, 560 \; \text{B/s}
+\end{align*}
+\bigskip
+
+\subsection{L'algorithme précédent est dit << vertical >>. Suggérez un autre algorithme de parcours des données ayant un meilleur taux de transfert maximal soutenu. Quel serait ce taux (en octets/seconde)?}
+Nous proposons une technique qui réduit le nombre de transitions entre les plateaux.
+\begin{verbatim}
+Pour chaque surface du disque :
+    Pour chaque piste d'une surface :
+        Passer tous les secteurs d'une piste
+\end{verbatim}
+Le taux de transfert est le même que l'algorithme vertical lorsqu'il s'agit de lire une piste, mais puisqu'il perd moins de temps sur différents plateaux, il est plus rapide dans l'ensemble. Pour calculer la valeur réelle, nous devons savoir le temps qu'il faut pour passer d'un plateau à l'autre et d'une piste à l'autre. \\
+Cependant, nous pourrions également envisager, en mode lecture, l'activation de toutes les têtes de lecture en même temps.
+\begin{verbatim}
+Pour toutes les surfaces du disque :
+    Pour chaque cylindre du disque :
+        Passer tous les secteurs d'une piste
+\end{verbatim}
+Ce qui donne un taux 6 fois plus rapide, donc $\approx$ 377 487 360 B/s.
+
+\newpage
+\section{ordinateur}
+\renewcommand{\thesubsection}{\alph{subsection}.}
+Cette image représente un << Raspberry Pi >>, un ordinateur miniature de la taille d'une carte de crédit qui permet d'exécuter un système d'exploitation complet (comme Linux).
+
+\begin{figure}[h]
+\centering
+\includegraphics{raspberri_pi.png}
+\end{figure}
+
+Pour en faire un vrai ordinateur utilisable, il manque les périphériques externes (écran, clavier, souris...). Cependant, tous les composants essentiels sont intégrés dans la puce noire au centre du Raspberry Pi, ce qui en fait un système sur puce (system on chip).
+\bigskip
+
+\subsection{Quels sont ces composants essentiels ?}
+Le Raspberry Pi possède un processeur CPU/GPU intégrant la mémoire RAM, des ports entrées/sorties, comme des ports USB, des broches GPIO, et le nécessaire pour l'alimentation, l'affichage, etc. Il contient également un socle pour y insérer une carte SD pour la mémoire. Enfin, le tout est monté sur un circuit imprimé gérant les connexions entre les composants.
+\bigskip
+
+\subsection{Sur un ordinateur de bureau, ces composants sont séparés et beaucoup plus gros. Que pouvez-vous dire sur les performances de la Raspberry Pi ?}
+Il est certain qu'un Raspberry Pi est moins puissant qu'un ordinateur moderne, mais il est pourtant très pratique. Il est très économique, facile à utiliser, permet d'effectuer des tâches conventionnelles, mais peut également exécuter des programmes conçus par son propriétaire. Puisqu'il contient plusieurs entrées et sorties, incluant des broches GPIO, plusieurs projets d'électronique ou de robotique peuvent être conçus en utilisant le Raspberry Pi comme carte mère et ses composants essentiels. Il s'agit donc d'un petit ordinateur parfait pour apprendre et s'amuser à budget.
+\vspace{5mm}
+
+\indent Le nouveau modèle, Raspberry Pi B+, a tout de même des performances plus que satisfaisante. 512 MB de RAM, 4 ports USB 2.0, 40 broches GPIO, une meilleure consommation électrique, etc. Et avec une distribution Linux comme système d'exploitation qui consomme peu de ressources, on peut sans problème utiliser le Raspberry Pi comme ordinateur pour des utilisations quotidiennes, en plus de ses projets d'électroniques.
+
+\newpage
+\section{description RTN}
+La notation RTN (Register Transfer Notation) est très importante en architecture de processeurs. Elle permet de décrire, dans un langage universel, les instructions et les opérations permettant ces instructions. On la retrouve, habituellement sous la forme enseignée en INF1600, dans la majorité des manuels de référence de microprocesseurs. Voyez, par exemple, cet extrait du manuel du Pentium d'Intel (instruction AAM) :
+
+\noindent
+\fbox{
+	\parbox[c][7em][c]{0.75\textwidth}{
+		AAM -- ASCII Adjust AX after Multiplicity \\
+		Operation \\
+		regAL $\gets$ AL; \\
+		AH $\gets$ regAL / imm8; \\
+		AL $\gets$ regAL MOD imm8; \\
+		NOTE: imm8 has the value of the instruction's second byte.
+	}
+}
+\bigskip
+
+\noindent Le langage RTN vient en deux saveurs : abstrait et concret. Vous aurez la chance d'écrire du RTN concret dans l'exercice 5. Dans cet exercice, vous devez plutôt traduire en RTN abstrait certaines instructions d'un processeur fictif. Il s'agit du processeur décrit à la diapositive 36 du document 3-Architecture\_ part1.pdf. Notez ces définitions supplémentaires :
+\vspace{5mm}
+
+\noindent
+op<4..0> := IR<31..27> \qquad \qquad c<4..0> := IR<16..12> \\
+a<4..0> := IR<26..22> \qquad \qquad k<16..00> := IR<16..0> \\
+b<4..0> := IR<21..17>
+\vspace{5mm}
+
+\noindent Ici, cela signifie par exemple que la << variable >> $a$ correspond à la plage des bits 26 à 22 (inclusivement) du registre d'instruction IR. On peut donc remplacer IR<26..22> par $a$, tout simplement. La plage $op$ correspond au code d'opération.
+\vspace{5mm}
+
+\noindent Écrivez en notation RTN abstraite les instructions éventuelles suivantes :
+\subsection{DECRINCR Rb, Ra :}
+(IR<31..27> = 14) $\to$ R[IR<21..17>] $\gets$  R[IR<21..17>] - 1; R[IR<26..22>] $\gets$  R[IR<26..22>] + 1;
+\bigskip
+
+\subsection{XORk Ra, Rb, Rc, k :}
+(IR<31..27> = 13) $\to$ R[IR<16..12>] $\gets$ (R[IR<21..17>] \text{<}\text{<} IR<16..0> \^ \, R[IR<26..22>])
+
+\newpage
+\section{architecture d'un microprocesseur}
+Soit l'instruction \\
+\hspace{2em} r1 $\gets$ r2 + Mémoire2 [r3 + 0x11]
+\subsection{Écrivez un encodage possible (en hexadécimal) de l'instruction. Inventez l'opcode au besoin.}
+Inventons l'opcode BB. L'instruction est BB 011 001 010 00 0000000010001, donc BB 65 00 11, ou en \textit{little-endian}, 11 00 65 BB.
+\medskip
+
+\subsection{Écrivez le RTN concret des macro-instructions permettant d'exécuter l'instruction de haut-niveau avec la microarchitecture proposée.}
+\noindent
+T $\gets$ IR<12..0>; \\
+T $\gets$ T + IR<17..15>; \\
+T $\gets$ MEM2[T]; \\
+R[IR<23..21>] $\gets$ T + R[IR<20..18>];
+\medskip
+
+\subsection{Sous forme de tableau : pour chaque micro instruction trouvée en b), écrivez la liste des valeurs des signaux de contrôle qui en permettent l'exécution.}
+\begin{tabular}{| l | c c | c c c c c c c c c |}
+\hline
+Instruction & UAL & B & A & C & D & E & F & G & ecrireEIP & ecrireT & ecrireRegistre \\
+\hline
+T $\gets$ IR<12..0>; & 0x0A & xx & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 1 & 0 \\
+T $\gets$ T + IR<17..15>; & 0x4A & 10 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 1 & 0 \\
+T $\gets$ MEM2[T]; & 0x0A & xx & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 1 & 0 \\
+R[IR<23..21>] $\gets$ T + R[IR<20..18>]; & 0x4A & 01 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 1 \\
+\hline
+\end{tabular}
+\medskip
+
+\subsection{Les noms des signaux de contrôle sont $A$, $B$, $C$, $D$, $E$, $F$, $G$, $UAL$, $ecrireEIP$ et $ecrireRegistre$ (correspondant aux éléments de mêmes noms sur le circuit). À noter que le signal $B$ est sur 2 bits et que $UAL$ est sur 8 bits. Vous n'avez pas à effectuer la recherche d'instruction; supposez qu'elle se trouve déjà dans le registre $IR$.}
+\medskip
+
+\subsection{Simulez l'instruction avec le logiciel Electric. Faites une ou plusieurs captures d'écran montrant clairement que le résultat de la simulation est correct, en justifiant pourquoi, et joignez-la dans le rapport suite à la question c) précédente.}
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{premier_crop.png}
+\end{figure}
+\begin{enumerate}
+\item Notre algorithme commence à 45 ns. Le contenu de $ecx$ (r2) est 79837. Le contenu de $edx$ (r3) est 11. L'UAL contient la constante, 17.
+\item Dans T se retrouve r3 + 0x11 = 11 + 17 = 28.
+\item T vaut ensuite MEM2[28] = 5F5E5D5Ch = 1600019804.
+\item Dans r1 on écrit 79837 + 1600019804 = 1600099641.
+\end{enumerate}
+\bigskip
+
+Soit l'instruction \\
+\hspace{2em} r2 $\gets$ Mémoire2 [r1 + r3] \text{<}\text{<} 0x7
+\subsection{Écrivez un encodage possible (en hexadécimal) de l'instruction. Inventez l'opcode au besoin.}
+Inventons l'opcode FA. L'instruction est FA 001 011 010 00 0000000000111, donc FA 2D 00 07, ou en \textit{little-endian}, 07 00 2D FA.
+\medskip
+
+\subsection{Écrivez le RTN concret des macro-instructions permettant d'exécuter l'instruction de haut-niveau avec la microarchitecture proposée.}
+\noindent
+T $\gets$ R[IR<20..18>]; \\
+T $\gets$ T + R[IR<17..15>]; \\
+T $\gets$ MEM2[T]; \\
+R[IR<23..21>] $\gets$ T \text{<}\text{<} IR<12..0>;
+\medskip
+
+\subsection{Sous forme de tableau : pour chaque micro instruction trouvée en b), écrivez la liste des valeurs des signaux de contrôle qui en permettent l'exécution.}
+\begin{tabular}{| l | c c | c c c c c c c c c |}
+\hline
+Instruction & UAL & B & A & C & D & E & F & G & ecrireEIP & ecrireT & ecrireRegistre \\
+\hline
+T $\gets$ R[IR<20..18>]; & 0x0A & 01 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 1 & 0 \\
+T $\gets$ T + R[IR<17..15>]; & 0x4A & 10 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 1 & 0 \\
+T $\gets$ MEM2[T]; & 0x0A & xx & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 1 & 0 \\
+R[IR<23..21>] $\gets$ T \text{<}\text{<} IR<12..0>; & 0x10 & xx & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 1 \\
+\hline
+\end{tabular}
+\medskip
+
+\subsection{Les noms des signaux de contrôle sont $A$, $B$, $C$, $D$, $E$, $F$, $G$, $UAL$, $ecrireEIP$ et $ecrireRegistre$ (correspondant aux éléments de mêmes noms sur le circuit). À noter que le signal $B$ est sur 2 bits et que $UAL$ est sur 8 bits. Vous n'avez pas à effectuer la recherche d'instruction; supposez qu'elle se trouve déjà dans le registre $IR$.}
+\medskip
+
+\subsection{Simulez l'instruction avec le logiciel Electric. Faites une ou plusieurs captures d'écran montrant clairement que le résultat de la simulation est correct, en justifiant pourquoi, et joignez-la dans le rapport suite à la question c) précédente.}
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{deuxieme_crop.png}
+\end{figure}
+\begin{enumerate}
+\item Notre algorithme commence à 45 ns. Le contenu de $ebx$ (r1) est 31. Le contenu de $edx$ (r3) est 11. Dans IR se trouve la constante, 7.
+\item Dans T se retrouve r1 = 31.
+\item T vaut ensuite 31 + r3 = 31 + 11 = 42.
+\item T prend ensuite le contenu de MEM2[42] = 6D6B6C6Ah.
+\item Dans r2 on écrit 6D6B6C6Ah $<<$ 7 = B635B500h, une fois converti en \textit{little-endian}.
+\end{enumerate}
+
+\end{document}

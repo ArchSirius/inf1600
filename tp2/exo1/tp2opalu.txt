@@ -1,0 +1,23 @@
+# INF1600 - TP2
+# Mémoire de décodage de l'opération de l'UAL
+#
+# Chaque octet dit quoi envoyer comme signal "alu_op" selon l'opcode d'une
+# instruction donnée. Ici, l'adresse correspond directement à l'opcode de
+# l'instruction et l'octet à cette adresse correspond au signal "alu_op".
+
+# Opcode 0xc ("add") :
+C	4A
+
+# Opcode 0xe ("or") :
+E	0E
+
+# Contrôle de l'UAL (1) : A + bus B
+20	4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A
+
+# Contrôle de l'UAL (2) : addition (la valeur 4 est fournie par le mux sur
+# l'entrée "a")
+40	4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A 4A
+
+# Contrôle de l'UAL (3), passer directement le bus B
+60	0A 0A 0A 0A 0A 0A 0A 0A 0A 0A 0A 0A 0A 0A 0A 0A 0A 0A 0A 0A 0A 0A 0A 0A 0A 0A 0A 0A 0A 0A 0A 0A
+

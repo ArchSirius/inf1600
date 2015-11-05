@@ -1,0 +1,20 @@
+# INF1600 - TP2
+# Mémoire d'association des instructions aux microprogrammes
+#
+# Ce fichier associe les opcodes des instructions aux adresses de début des
+# microprogrammes du fichier "tp2ucode.txt".
+#
+# Chaque mot de 32 bits (4 octets, little-endian, séparés par des espaces)
+# donne l'adresse de la *première microinstruction* dans la mémoire de
+# microprogrammes pour une instruction donnée. Ici, l'adresse correspond à
+# 4 fois l'opcode de l'instruction visée.
+
+# Opcode 0 ("nop") :
+0	10 00 00 00	# adresse 0x10 dans la mémoire de microprogrammes
+
+# Opcode des opérations arithmétiques/logiques typiques (elles utilisent toutes
+# le même microprogramme; seule l'opération de l'UAL change, fixée dans le
+# fichier "tp2opalu.txt") :
+30	20 00 00 00	# 0xc ("add") : adresse 0x20
+38	20 00 00 00	# 0xe ("or") : adresse 0x20 (même adresse)
+

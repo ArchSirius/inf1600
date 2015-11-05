@@ -1,0 +1,8 @@
+#ifndef _TP4_HPP
+#define _TP4_HPP
+
+#define LARGEUR_CANEVAS 640
+#define HAUTEUR_CANEVAS 480
+#define COULEUR_CANEVAS 0x000000
+
+#endif // _TP4_HPP

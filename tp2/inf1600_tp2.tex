@@ -1,0 +1,299 @@
+\documentclass[10pt,letterpaper]{article}
+
+%Langue et caractères spéciaux
+\usepackage[french]{babel} 
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+%Marges
+\usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm, columnsep=20pt]{geometry}
+%Math
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{multirow}
+\usepackage{subfig}
+%Graphiques
+\usepackage{graphicx}
+\usepackage{xcolor}
+\definecolor{light-gray}{gray}{0.8}
+\usepackage{adjustbox}
+\usepackage{verbatim}
+\usepackage{float}
+%Titres de section/sous-section
+\usepackage[compact]{titlesec}
+\titleformat{\section}{\large\bfseries\itshape}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalsize}{\thesubsubsection}{1em}{}
+\renewcommand{\thesection}{Exercice \arabic{section} :}
+\renewcommand{\thesubsection}{\alph{subsection})}
+\renewcommand{\thesubsubsection}{\arabic{subsubsection}.}
+%Commandes personnalisées
+\newcommand{\CRR}[1]{\multirow{2}{*}{#1}}
+\newcommand{\GBG}[1]{\fcolorbox{light-gray}{light-gray}{#1}}
+\newenvironment{code}%
+   {\par\noindent\adjustbox{margin=1ex,bgcolor=light-gray,margin=0ex \medskipamount}\bgroup\minipage\linewidth\verbatim}%
+   {\endverbatim\endminipage\egroup}
+
+%Titre
+\title{\vspace{-10mm}\Large
+INF1600 - TP 2
+\vspace{-4mm}}
+
+%Auteur
+\author{\large
+Samuel Rondeau\\
+Pacôme Bondet}
+\date{\today}
+
+
+\begin{document}
+
+\maketitle
+
+\section{architecture avec microcodes}
+\subsection{recherche d'instruction}
+Donnez la séquence de microcodes qui correspond à la recherche d’une instruction. Donnez la réponse sous la forme d'un tableau. Le tableau suivant montre un exemple de ce qui est attendu (la première ligne étant déjà écrite pour vous) :
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{| l || c | c | c | c | c | c | c | c | c | c | c | c | c | c | c | c || l |}
+\hline
+\textbf{RTN concret} & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0 & \textbf{hexa} \\
+\hline
+\GBG{MA $\gets$ PC;} & 0 & 0 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0x3060 \\
+\hline
+\GBG{MD $\gets$ M[MA]:} & \CRR{0} & \CRR{1} & \CRR{1} & \CRR{0} & \CRR{1} & \CRR{1} & \CRR{0} & \CRR{0} & \CRR{1} & \CRR{1} & \CRR{0} & \CRR{0} & \CRR{0} & \CRR{0} & \CRR{0} & \CRR{0} & \CRR{0x6CC0} \\
+\GBG{PC $\gets$ PC + 4;} & & & & & & & & & & & & & & & & & \\
+\hline
+\GBG{IR $\gets$ MD;} & 1 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0x8260 \\
+\hline
+\end{tabular}
+\end{table}
+
+\bigskip
+\subsection{instruction générique}
+Sous la même forme qu’en a), écrivez la séquence de microcodes permettant d’exécuter l’instruction d’opérations arithmétiques/logiques typiques décrite par le RTN abstrait :
+\begin{code}
+(IR<31..27> = opcode) ->
+	R[IR<26..22>] <- R[IR<21..17>] oper M[R[IR<16..12>] + IR<11..0>];
+\end{code}
+\hfill
+où \GBG{opcode} correspond au code d’opération requis pour exécuter l’opération arithmétique/logique \GBG{oper}. \\
+N’oubliez pas d’inclure le RTN concret à chaque ligne du tableau pour justifier vos choix de signaux de contrôle.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{| l || c | c | c | c | c | c | c | c | c | c | c | c | c | c | c | c || l |}
+\hline
+\textbf{RTN concret} & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0 & \textbf{hexa} \\
+\hline
+\GBG{A $\gets$ R[rc];} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 1 & 0 & 1 & 1 & 1 & 0 & 0x006E \\
+\hline
+\GBG{MA $\gets$ A + const;} & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 1 & 0x1021 \\
+\hline
+\GBG{MD $\gets$ M[MA]:} & \CRR{0} & \CRR{0} & \CRR{0} & \CRR{0} & \CRR{1} & \CRR{1} & \CRR{0} & \CRR{0} & \CRR{1} & \CRR{1} & \CRR{1} & \CRR{0} & \CRR{1} & \CRR{0} & \CRR{1} & \CRR{0} & \CRR{0x0CEA} \\
+\GBG{A $\gets$ R[rb];} & & & & & & & & & & & & & & & & & \\
+\hline
+\GBG{R[ra] $\gets$ A oper MD;} & 1 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0x8210 \\
+\hline
+\end{tabular}
+\end{table}
+
+\bigskip
+\subsection{simulation}
+Prenez une capture d’écran et intégrez-la dans votre rapport. Cette capture doit 
+bien montrer le résultat placé dans \GBG{R[1]} (\GBG{ECX} dans Electric) après l’exécution de 
+l’instruction à l’adresse 8 (dans \GBG{tp2mem.txt}, donc après la 3ième instruction). 
+Justifiez également le résultat obtenu dans votre rapport. 
+Pour rappel, l'adresse présentement exécutée est contenue dans le registre PC. 
+Votre capture d'écran doit donc montrer les cycles pendant lesquels PC vaut 8 (PC
+est affiché dans la cinquième ligne de la simulation).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{Capture1.png}
+\includegraphics[width=\textwidth]{Capture2.png}
+\caption{\label{fig:1C} Captures d'écran pour 1.c). La figure du haut représente la section de gauche (à partir de 0 ns) et la figure du bas représente la section de droite (jusqu'à 350 ns). La ligne pointillée montre le moment où \GBG{PC} cesse de valoir 8.}
+\end{figure}
+
+\bigskip
+\subsection{opération OR}
+Soit l’UAL définie dans la cellule ALU de la librairie du TP2 sur Electric. Quelle doit 
+être la valeur de \GBG{op[6:0]} pour que l’opération finale soit un OR (c'est-à-dire un OU 
+logique bit à bit) ? \\
+Vous devez naviguer dans Electric (CTRL+D et CTRL+U) pour répondre à cette 
+question. \\
+Écrivez cette valeur à l’endroit approprié du fichier \GBG{tp2opalu.txt} et relancez la 
+simulation (redémarrez Electric pour être certain) afin de tester l’instruction OR de 
+l’adresse 0xc dans \GBG{tp2mem.txt}. \\
+Donnez aussi cette valeur dans votre rapport. \\
+\par Étudions le code \GBG{op} de \GBG{ADD} dans \GBG{tp2opalu.txt} ainsi que l'ALU afin d'en comprendre le comportement et de trouver le bon code pour \GBG{OR}. Le bit \GBG{op[6]} doit être 0 puisque l'opération ne nécessite pas \GBG{and32}. Le bit \GBG{op[5]} est aussi à 0 car on n'utilise pas \GBG{add32}. Le bit \GBG{op[4]} est aussi à 0 car on n'utilise pas \GBG{shift32} mais plutôt la branche 0 du multiplexeur. Ensuite, étudions la table de vérité de \GBG{AND}, pour vérifier comment obtenir \GBG{op[3:0]} = 1010, soit A. On remarque que \GBG{op[3:0]} est écrit selon la table de vérité suivant le Code Gray, le bit de poids fort étant celui du bas. Nous devrons en tenir compte pour déterminer \GBG{op[3:0]} de \GBG{OR}, qui doit alors être \GBG{op} = 0000 1110, soit \textbf{0E}. \\
+La simulation dans Electric est montrée à la figure \ref{fig:1D}.
+
+\begin{table}[ht]
+\centering
+\subfloat[\label{tab:tt_add_a} Usuelle]{
+\begin{tabular}{| c | c | c |}
+\hline
+A & B & A $\oplus$ B \\
+\hline
+0 & 0 & 0 \\
+0 & 1 & 1 \\
+1 & 0 & 1 \\
+1 & 1 & 0 \\
+\hline
+\end{tabular}}
+\qquad\qquad
+\subfloat[\label{tab:tt_add_b} Code Gray]{
+\begin{tabular}{| c | c | c |}
+\hline
+A & B & A $\oplus$ B \\
+\hline
+0 & 0 & 0 \\
+0 & 1 & 1 \\
+1 & 1 & 0 \\
+1 & 0 & 1 \\
+\hline
+\end{tabular}}
+\caption{\label{tab:tt_add} Table de vérité de l'additionneur binaire (\GBG{xor})}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{| c | c | c |}
+\hline
+A & B & A | B \\
+\hline
+0 & 0 & 0 \\
+0 & 1 & 1 \\
+1 & 1 & 1 \\
+1 & 0 & 1 \\
+\hline
+\end{tabular}
+\caption{\label{tab:tt_add} Table de vérité de l'opération \GBG{or} binaire}
+\end{table}
+
+% Figure plus bas pour bon format
+
+\bigskip
+\subsection{questions}
+\subsubsection{Pour l’instruction 0x1234567 du processeur étudié dans ce TP, à quoi servent
+les données des deux derniers octets (0x4567) ? Donnez une autre 
+instruction (sur 32 bits) qui aurait exactement le même effet d’exécution.}
+Les deux derniers octets correspondent à \GBG{IR<15..0>}, qui selon l'architecture, correspondent à la constante (inutilisée) et une partie de \GBG{rc}. \\
+0x1234567 = 0x01 0x23 0x45 0x67. On remarque alors qu'il s'agit de l'instruction \GBG{NOP} (opcpde 0) de \GBG{tp2mem.txt}. En effet, l'opcode vaut \GBG{IR<31..27> = 0}. Ainsi, la table de vérité \GBG{op<3..0>} vaut toujours 0, et les autres bits de l'opcode aussi. Ainsi, l'\GBG{UAL} n'effectue aucune opération. On pourrait donc écrire l'instruction 0x0 qui ferait la même chose, rien.
+
+\medskip
+\subsubsection{Nommez un avantage d’avoir une architecture à deux bus. Vous êtes -vous 
+servi de cet avantage dans votre microprogramme développé en b) ?}
+Il est possible d'effectuer plus d'instructions en parallèlle, c'est-à-dire envoyer une information sur le bus A et une information sur le bus B pour faire deux opérations à la fois. C'est ce que nous avons fait à l'étape \GBG{MD $\gets$ M[MA]: A $\gets$ R[rb];} au b).
+
+\medskip
+\subsubsection{Diriez-vous que les instructions de cette architecture peuvent être aussi 
+flexibles, en terme d’opérations arithmétiques/logiques, que celles du 
+processeur étudié à l’exercice 5 du TP1 ? Pourquoi ?}
+Oui, voire même plus. Elle contient deux bus, ce qui permet plus d'opérations en parallèle. Elle contient également plus de registres temporaires au lieu de T, pour stocker les données à envoyer à l'UAL. De plus, l'accès à la mémoire est détachée de l'architecture principale, et ne requiert donc ni le bus A ni le bus B.
+\vspace{5cm}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{Capture3.png}
+\caption{\label{fig:1D} Capture d'écran pour 1.d). La première ligne pointillée montre le moment où les 2 opérations \GBG{AND} sont effectuées. La seconde ligne pointillée montre le moment où l'opération \GBG{OR} est effectuée. Chaque opération correspond au bon \GBG{PC} décalé, puisque \GBG{PC <- PC + 4}.}
+\end{figure}
+
+\newpage
+\section{assembleur avec processeur à pile}
+Écrivez l'expression suivante en assembleur :
+\begin{equation*}
+a = \left( \frac{b \times c}{f + c} \right) \left( \frac{g - d}{e} \right) + e \times \left( g - d \right)
+\end{equation*}
+
+Dans le code en assembleur, nul besoin de déclarer des étiquettes, car \GBG{a}, \GBG{b}, \GBG{c}, \GBG{d}, \GBG{e}, \GBG{f} et \GBG{g} sont déclarées commes variables globales dans la fonction principale. Ainsi, on peut tout simplement écrire le code assembleur suivant qui donne le même résultat que l'instruction en C.
+\begin{verbatim}
+	.global func_s
+	
+	func_s:
+	    flds b
+	    flds c
+	    fmulp
+	    fstps a    #a = b * c
+	    flds f
+	    flds c
+	    faddp
+	    flds a
+	    fdivp
+	    fstps a    #a = (b * c) / (f + c)
+	    flds g
+	    flds d
+	    fsubrp
+	    flds e
+	    fdivrp
+	    flds a
+	    fmulp
+	    fstps a    #a = ((b * c) / (f + c)) * ((g - d) / e)
+	    flds g
+	    flds d
+	    fsubrp
+	    flds e
+	    fmulp
+	    flds a
+	    faddp
+	    fstps a    #a = (((b * c) / (f + c)) * ((g - d) / e)) + (e * (g - d))
+	
+	
+	    ret
+\end{verbatim}
+
+\newpage
+\section{conditions et branchements}
+Écrivez la séquence suivante décrite en langage C :
+\begin{verbatim}
+	a = b;
+	if (c + 1600 > e + 2013) {
+	    a = c;
+	    if ((b <= c) || (d == e)) {
+		        a = e;
+	    }
+	} else {
+	    a = a + b;
+	}
+
+\end{verbatim}
+où \GBG{a}, \GBG{b}, \GBG{c}, \GBG{d} et \GBG{e} sont des entiers signés (type \textit{int} en langage C) sur 32 bits. Vous pouvez utiliser directement ces symboles pour représenter leurs adresses en assembleur, comme à l'exercice 2.
+\begin{verbatim}
+	.global func_s
+	
+	func_s:
+	    mov b, %ebx
+	    mov %ebx, a        #a = b
+	    mov c, %ecx
+	    add $1600, %ecx    #(c + 1600)
+	    mov e, %edx
+	    add $2013, %edx    #(e + 2013)
+	    cmp %ecx, %edx
+	    jae else           #si (c + 1600 <= e + 2013) sauter au else
+	    mov c, %ecx
+	    mov %ecx, a        # a = c
+	    cmp %ebx, %ecx
+	    jae if2            #si (b <= c) entrer dans le if
+	    mov d, %edx
+	    mov e, %ecx
+	    cmp %edx, %ecx
+	    je if2             #sinon, si (d == e) entrer dans le if
+	    jmp fin            #sinon, quitter
+	
+	if2:
+	    mov e, %ecx
+	    mov %ecx,a         #a = e
+	    jmp fin
+
+	else:
+	    mov a, %eax
+	    add b, %eax        #a = a + b
+	    mov %eax, a
+
+	fin:
+	    ret
+\end{verbatim}
+
+\end{document}

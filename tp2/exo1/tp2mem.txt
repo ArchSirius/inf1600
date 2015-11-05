@@ -1,0 +1,28 @@
+# INF1600 - TP2
+# Mémoire principale
+#
+# Cette mémoire contient autant les instructions que les données. Le processeur
+# commencera l'exécution à l'adresse 0 (ce qui est souvent appelé vecteur
+# de démarrage, ou "reset vector"). Les instructions ont 32 bits et sont écrites
+# ici en *little-endian*, chaque octet séparé par un espace.
+
+# "nop" (opcode 0) avec des valeurs spécifiques dans les bits inutilisés afin
+# de repérer/valider l'instruction facilement lors de la simulation
+0	67 45 23 01
+
+# "add" (opcode 0xc) : R[1] <= R[2] add M[R[3] + 0x100]
+4	00 31 44 60
+
+# "add" (opcode 0xc) : R[1] <= R[1] add M[R[2] + 0x107]
+8	07 21 42 60
+
+# "or" (opcode 0xe) : R[2] <= R[1] or M[R[3] + 0x110]
+C	10 31 82 70
+
+# Série de "nop" (opcode 0)
+10	01 00 00 00 02 00 00 00 03 00 00 00 04 00 00 00 05 00 00 00
+
+# Quelques données déjà en mémoire...
+100	77 38 35 30 8E 94 A8 B1 64 5B 34 F0 E9 7F 78 CF
+110	51 B0 3E 2F 0E AC 87 FE CA 6F 55 30 68 38 F4 89
+120	E3 63 9B 07 EC 35 3A CA 16 E7 Bf BA 88 7D 0E 01
